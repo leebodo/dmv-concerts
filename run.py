@@ -44,7 +44,26 @@ FANTANO_URLS = [
     "https://theneedledrop.com/loved-list/2025/",
     "https://theneedledrop.com/loved-list/2026/",
 ]
-SONGKICK_DC_BASE = "https://www.songkick.com/metro-areas/1409-us-washington"
+
+# Songkick sources. The metro page caps at ~1001 upcoming events, which in a
+# busy market like DC only covers the next ~2 months. Per-venue pages don't
+# have that cap and reach further into the future. We scrape both: the metro
+# page catches venues we haven't enumerated, and the venue pages catch later
+# dates at the major rooms. Shows from both sources get deduped by URL.
+SONGKICK_SOURCES = [
+    # Wide-net metro page (~1001 cap)
+    ("metro", "https://www.songkick.com/metro-areas/1409-us-washington"),
+    # Per-venue pages (no cap; reach further into the future)
+    ("venue", "https://www.songkick.com/venues/922-930-club/calendar"),
+    ("venue", "https://www.songkick.com/venues/1038-black-cat/calendar"),
+    ("venue", "https://www.songkick.com/venues/3552789-anthem/calendar"),
+    ("venue", "https://www.songkick.com/venues/4498657-atlantis/calendar"),
+    ("venue", "https://www.songkick.com/venues/20843-dc9-nightclub/calendar"),
+    ("venue", "https://www.songkick.com/venues/2826-lincoln-theatre/calendar"),
+    ("venue", "https://www.songkick.com/venues/4420812-songbyrd-music-house/calendar"),
+    ("venue", "https://www.songkick.com/venues/1448428-fillmore-silver-spring/calendar"),
+    ("venue", "https://www.songkick.com/venues/93446-merriweather-post-pavilion/calendar"),
+]
 RYM_FILE = HERE / "rym_10s.txt"
 
 # Names too generic / likely to collide.
@@ -273,29 +292,41 @@ def parse_songkick_page(soup: BeautifulSoup) -> list[Show]:
     return out
 
 def scrape_songkick_metro(fetcher: Fetcher, max_pages: int) -> list[Show]:
-    shows: list[Show] = []
-    for page_num in range(1, max_pages + 1):
-        url = SONGKICK_DC_BASE if page_num == 1 \
-              else f"{SONGKICK_DC_BASE}?page={page_num}"
-        print(f"    page {page_num}: {url}")
-        try:
-            html_text = fetcher.get(url)
-        except Exception as e:
-            print(f"      error: {e}; stopping")
-            break
-        soup = BeautifulSoup(html_text, "html.parser")
-        page_shows = parse_songkick_page(soup)
-        if not page_shows:
-            print("      0 shows on this page; stopping")
-            break
-        shows.extend(page_shows)
-        print(f"      +{len(page_shows)} (running total {len(shows)})")
-        next_n = page_num + 1
-        if not soup.find("a", href=re.compile(rf"page={next_n}\b")):
-            print("      no next page; done")
-            break
-        time.sleep(SLEEP_BETWEEN_PAGES)
-    return shows
+    """Scrape both the metro page (broad coverage, ~1001 cap) and per-venue
+    pages (narrower, but reach further into the future). Dedupe by concert URL."""
+    seen_urls: set[str] = set()
+    all_shows: list[Show] = []
+
+    for kind, base_url in SONGKICK_SOURCES:
+        print(f"  source: {kind} {base_url}")
+        source_shows: list[Show] = []
+        for page_num in range(1, max_pages + 1):
+            sep = "&" if "?" in base_url else "?"
+            url = base_url if page_num == 1 else f"{base_url}{sep}page={page_num}"
+            print(f"    page {page_num}: {url}")
+            try:
+                html_text = fetcher.get(url)
+            except Exception as e:
+                print(f"      error: {e}; stopping this source")
+                break
+            soup = BeautifulSoup(html_text, "html.parser")
+            page_shows = parse_songkick_page(soup)
+            if not page_shows:
+                print("      0 shows on this page; stopping this source")
+                break
+            new_shows = [s for s in page_shows if s.url not in seen_urls]
+            for s in new_shows:
+                seen_urls.add(s.url)
+            source_shows.extend(new_shows)
+            print(f"      +{len(new_shows)} new ({len(page_shows) - len(new_shows)} dupes)")
+            next_n = page_num + 1
+            if not soup.find("a", href=re.compile(rf"page={next_n}\b")):
+                print("      no next page; done with this source")
+                break
+            time.sleep(SLEEP_BETWEEN_PAGES)
+        all_shows.extend(source_shows)
+        print(f"    → {len(source_shows)} shows from this source")
+    return all_shows
 
 
 # -------- matching --------
