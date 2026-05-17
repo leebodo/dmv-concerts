@@ -250,7 +250,24 @@ def parse_songkick_page(soup: BeautifulSoup) -> list[Show]:
                     r"[A-Za-z]+\s+\d{4}$", text):
             current_date = _parse_date(text)
             continue
-        a = child.find("a", href=re.compile(r"^/(concerts|festivals)/"))
+        # Each event <li> contains multiple <a> links to /concerts/: a thumbnail
+        # wrapper (just an <img> inside, no text), the main artist link (with
+        # <strong>headliner</strong> and trailing support text inside a <p
+        # class="artists">), and a "Buy tickets" button. We want the artist
+        # link — find the <p class="artists"> first and look inside it.
+        artists_p = child.find("p", class_=re.compile(r"\bartists\b"))
+        if artists_p:
+            a = artists_p.find("a", href=re.compile(r"^/(concerts|festivals)/"))
+        else:
+            # Fallback for older / different structures: pick the concert link
+            # that actually contains a <strong>.
+            a = None
+            for cand in child.find_all("a", href=re.compile(r"^/(concerts|festivals)/")):
+                if cand.find("strong"):
+                    a = cand
+                    break
+            if a is None:
+                a = child.find("a", href=re.compile(r"^/(concerts|festivals)/"))
         if not a:
             continue
         href = a.get("href", "")
@@ -272,18 +289,15 @@ def parse_songkick_page(soup: BeautifulSoup) -> list[Show]:
                 parts = re.split(r",\s*|\s+and\s+", tail_text)
                 supporting = [p.strip() for p in parts if p.strip()]
         venue, city = "", ""
-        venue_a = child.find("a", href=re.compile(r"^/venues/"))
+        # Songkick wraps location in <p class="location">. Scope our search
+        # there so we don't accidentally pull venue text from elsewhere.
+        location_p = child.find("p", class_=re.compile(r"\blocation\b"))
+        search_root = location_p if location_p else child
+        venue_a = search_root.find("a", href=re.compile(r"^/venues/"))
         if venue_a:
             venue = venue_a.get_text(strip=True)
-            after = venue_a.next_sibling
-            after_text = ""
-            while after and len(after_text) < 200:
-                if hasattr(after, "get_text"):
-                    after_text += " " + after.get_text(" ", strip=True)
-                elif isinstance(after, str):
-                    after_text += " " + after
-                after = after.next_sibling
-            m = re.search(r",\s*([^,]+),\s*[A-Z]{2}", after_text)
+            full_loc_text = search_root.get_text(" ", strip=True)
+            m = re.search(r",\s*([^,]+),\s*[A-Z]{2}", full_loc_text)
             if m:
                 city = m.group(1).strip()
         out.append(Show(date=current_date, headliner=headliner,
