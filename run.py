@@ -445,6 +445,73 @@ def scrape_songkick_metro(fetcher: Fetcher, max_pages: int) -> list[Show]:
     return all_shows
 
 
+# Cache file mapping Songkick concert URL → tour name (or empty string if none).
+# Tour names rarely change once set, so we cache forever; on each run we only
+# fetch concert pages whose URLs aren't in the cache yet.
+_TOUR_CACHE_PATH = CACHE_DIR / "tour_names.json"
+
+def _load_tour_cache() -> dict[str, str]:
+    if not _TOUR_CACHE_PATH.exists():
+        return {}
+    try:
+        return json.loads(_TOUR_CACHE_PATH.read_text())
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+def _save_tour_cache(cache: dict[str, str]) -> None:
+    _TOUR_CACHE_PATH.write_text(json.dumps(cache, indent=0))
+
+def fetch_tour_names(fetcher: Fetcher, urls: list[str]) -> dict[str, str]:
+    """Given a list of Songkick concert URLs, return {url: tour_name}.
+    Empty string means we checked and there was no tour name. Cached forever
+    once seen — re-runs only fetch newly-discovered URLs."""
+    cache = _load_tour_cache()
+    needed = [u for u in urls if u not in cache]
+    if not needed:
+        print(f"    all {len(urls)} tour names cached")
+        return {u: cache[u] for u in urls}
+    print(f"    fetching {len(needed)} concert detail pages "
+          f"({len(urls) - len(needed)} cached)")
+    for i, url in enumerate(needed, 1):
+        try:
+            html_text = fetcher.get(url)
+        except Exception as e:
+            print(f"      [{i}/{len(needed)}] error: {e}")
+            cache[url] = ""
+            continue
+        # The detail page has "Tour name:" followed by the value, possibly
+        # separated by HTML tags (dt/dd pattern) or just inline.
+        # First parse with BeautifulSoup and search the text content directly.
+        try:
+            detail_soup = BeautifulSoup(html_text, "html.parser")
+            page_text = detail_soup.get_text(" ", strip=True)
+            m = re.search(r"Tour name:\s*([^\n]+?)\s+(?:Doors open|Concert in|Find out|$)",
+                          page_text, re.IGNORECASE)
+            if not m:
+                # Fallback: simpler pattern, take up to the next ~120 chars
+                m = re.search(r"Tour name:\s*([^\n<]{1,120}?)(?:\s{2,}|\s+Doors|\.\s|$)",
+                              page_text, re.IGNORECASE)
+        except Exception:
+            m = None
+        if m:
+            tour = m.group(1).strip()
+            # Sanity cap on length — avoid scooping up huge HTML chunks if
+            # the page structure changes.
+            if 0 < len(tour) <= 120:
+                cache[url] = tour
+            else:
+                cache[url] = ""
+        else:
+            cache[url] = ""
+        if i % 10 == 0:
+            _save_tour_cache(cache)  # checkpoint
+            print(f"      [{i}/{len(needed)}] checkpoint saved")
+        time.sleep(0.5)
+    _save_tour_cache(cache)
+    print(f"    done; cache now has {len(cache)} entries")
+    return {u: cache.get(u, "") for u in urls}
+
+
 # -------- matching --------
 
 def normalize(name: str) -> str:
@@ -793,7 +860,8 @@ def album_in_tour_name(album: str, tour_name: str) -> bool:
     return n_album in n_tour
 
 
-def render_match(m: Match, score_map: dict[tuple[str, str], int]) -> str:
+def render_match(m: Match, score_map: dict[tuple[str, str], int],
+                 tour_names: dict[str, str]) -> str:
     date = html.escape(m.show.date or "TBD")
     matched = html.escape(m.matched_artist_name)
     if m.matched_artist_role == "headliner":
@@ -806,13 +874,9 @@ def render_match(m: Match, score_map: dict[tuple[str, str], int]) -> str:
     src = html.escape(m.listed_album.source)
     score_html = (f' <span class="score">(match score {m.score})</span>'
                   if m.score < 100 else "")
-    # Use Songkick URL as stable storage key. It survives page regeneration.
     key = html.escape(m.show.url, quote=True)
 
     # Look up the TND review score for the (artist, album) pair we're showing.
-    # First try the artist as listed in the loved set, then fall back to the
-    # Songkick name that actually matched. This handles cases where the listed
-    # artist on RYM/Fantano differs slightly from the Songkick name.
     tnd_score: int | None = None
     candidate_artists = [m.listed_album.artist, m.matched_artist_name]
     for cand in candidate_artists:
@@ -822,7 +886,6 @@ def render_match(m: Match, score_map: dict[tuple[str, str], int]) -> str:
             tnd_score = score_map[(n_artist, n_album)]
             break
 
-    # Build score badge: prefer the precise numeric score, fall back to a tier.
     if tnd_score is not None:
         score_badge_class = f"score-badge score-{tnd_score}"
         score_badge_text = f"{tnd_score}/10"
@@ -834,8 +897,11 @@ def render_match(m: Match, score_map: dict[tuple[str, str], int]) -> str:
         score_badge_text = "8+/10"
     score_badge = f'<span class="{score_badge_class}">{score_badge_text}</span>'
 
-    # Tour name extraction & album-touring heuristic.
-    tour_name = extract_tour_name(m.show.headliner, m.matched_artist_name)
+    # Tour name from the cache; fall back to extracting from the headliner
+    # string just in case the detail-page fetch missed something.
+    tour_name = tour_names.get(m.show.url, "")
+    if not tour_name:
+        tour_name = extract_tour_name(m.show.headliner, m.matched_artist_name)
     tour_html = ""
     if tour_name:
         is_album_tour = album_in_tour_name(album, tour_name)
@@ -884,16 +950,16 @@ def _dedupe_matches(matches: list[Match]) -> list[Match]:
 
 def write_html(exact: list[Match], fuzzy: list[Match], n_loved: int,
                n_shows: int, score_map: dict[tuple[str, str], int],
-               out_path: pathlib.Path) -> None:
+               tour_names: dict[str, str], out_path: pathlib.Path) -> None:
     exact = _dedupe_matches(exact)
     fuzzy = _dedupe_matches(fuzzy)
     exact_sorted = sorted(exact, key=lambda m: (m.show.date or "9999",
                                                 m.show.headliner))
     fuzzy_sorted = sorted(fuzzy, key=lambda m: (-m.score,
                                                 m.show.date or "9999"))
-    exact_html = ("\n".join(render_match(m, score_map) for m in exact_sorted)
+    exact_html = ("\n".join(render_match(m, score_map, tour_names) for m in exact_sorted)
                   or '<p class="empty">No exact matches right now.</p>')
-    fuzzy_html = ("\n".join(render_match(m, score_map) for m in fuzzy_sorted)
+    fuzzy_html = ("\n".join(render_match(m, score_map, tour_names) for m in fuzzy_sorted)
                   or '<p class="empty">No fuzzy matches.</p>')
     out_path.write_text(HTML_TEMPLATE.format(
         generated=dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -915,25 +981,32 @@ def main():
 
     fetcher = Fetcher()
     try:
-        print("\n[1/4] Gathering Fantano-loved artists…")
+        print("\n[1/5] Gathering Fantano-loved artists…")
         loved = gather_loved(fetcher, refresh=args.refresh)
         print(f"    → {len(loved)} unique loved artists")
 
-        print("\n[2/4] Scraping TND review scores (8/10, 9/10, 10/10)…")
+        print("\n[2/5] Scraping TND review scores (8/10, 9/10, 10/10)…")
         score_map = scrape_fantano_scores(fetcher, refresh=args.refresh)
         print(f"    → {len(score_map)} scored albums")
 
-        print("\n[3/4] Scraping Songkick DC metro calendar…")
+        print("\n[3/5] Scraping Songkick DC metro calendar…")
         shows = scrape_songkick_metro(fetcher, max_pages=args.max_pages)
         print(f"    → {len(shows)} shows total")
 
-        print("\n[4/4] Matching…")
+        print("\n[4/5] Matching…")
         exact, fuzzy = match_shows(shows, loved)
         print(f"    → {len(exact)} exact, {len(fuzzy)} fuzzy")
 
+        print("\n[5/5] Fetching tour names from concert detail pages…")
+        # Only fetch detail pages for shows we matched against — cheaper.
+        matched_urls = list({m.show.url for m in (exact + fuzzy)})
+        tour_names = fetch_tour_names(fetcher, matched_urls)
+        n_with_tour = sum(1 for v in tour_names.values() if v)
+        print(f"    → {n_with_tour}/{len(tour_names)} shows have a tour name")
+
         out = HERE / "dc_shows.html"
         write_html(exact, fuzzy, n_loved=len(loved), n_shows=len(shows),
-                   score_map=score_map, out_path=out)
+                   score_map=score_map, tour_names=tour_names, out_path=out)
         print(f"\nWrote {out}. Open it in your browser.")
     finally:
         fetcher.close()
