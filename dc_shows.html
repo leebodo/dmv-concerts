@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fantano artists in DC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #fafaf7; --fg: #1a1a1a; --muted: #666;
+    --accent: #c0392b; --border: #e3e1d8;
+    --going: #2a7f3e; --skip: #888;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         max-width: 760px; margin: 2rem auto; padding: 0 1.2rem;
+         background: var(--bg); color: var(--fg); line-height: 1.5; }
+  h1 { font-size: 1.6rem; margin: 0 0 0.2rem 0; }
+  .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.15rem; margin-top: 2rem; padding-bottom: 0.3rem;
+        border-bottom: 1px solid var(--border); }
+
+  .filters { background: #fff; border: 1px solid var(--border); border-radius: 6px;
+              padding: 0.6rem 0.8rem; margin: 1rem 0; font-size: 0.88rem;
+              display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; align-items: center; }
+  .filters label { cursor: pointer; user-select: none; }
+  .filters input[type=checkbox] { vertical-align: middle; }
+  .filter-counts { color: var(--muted); margin-left: auto; }
+
+  .show { border-bottom: 1px solid var(--border); padding: 0.8rem 0;
+           transition: opacity 0.15s; }
+  .show.hidden { display: none; }
+  .show.dim { opacity: 0.4; }
+  .show .date { font-weight: 600; }
+  .show .artist { font-weight: 600; color: var(--accent); }
+  .show.going .artist { color: var(--going); }
+  .show .meta { color: var(--muted); font-size: 0.88rem; }
+  .show .album { font-style: italic; color: var(--muted); font-size: 0.88rem; }
+  .source-tag { display: inline-block; font-size: 0.7rem; padding: 1px 6px;
+                 background: #eee; border-radius: 3px; color: #555;
+                 margin-left: 0.3rem; }
+  .score { font-size: 0.75rem; color: var(--muted); }
+  a { color: var(--accent); }
+  .empty { color: var(--muted); font-style: italic; }
+
+  .labels { margin-top: 0.4rem; font-size: 0.82rem; }
+  .labels button { font: inherit; padding: 2px 10px; margin-right: 4px;
+                    border: 1px solid var(--border); background: #fff;
+                    border-radius: 4px; cursor: pointer; color: var(--muted); }
+  .labels button:hover { background: #f3f1ea; }
+  .labels button.active[data-label=going] { background: var(--going); color: #fff; border-color: var(--going); }
+  .labels button.active[data-label=skip] { background: var(--skip); color: #fff; border-color: var(--skip); }
+  .status { margin-left: 0.5rem; color: var(--muted); font-size: 0.78rem; }
+</style>
+</head>
+<body>
+<h1>Fantano artists with upcoming DMV shows</h1>
+<p class="sub">Generated 2026-05-17 21:44. 201 unique loved artists across the
+three lists, checked against 1001 upcoming DMV shows on Songkick.</p>
+
+<div class="filters">
+  <label><input type="checkbox" id="hide-skipped" checked> Hide skipped</label>
+  <label><input type="checkbox" id="only-unlabeled"> Only show new (unlabeled)</label>
+  <label><input type="checkbox" id="hide-fuzzy"> Hide fuzzy section</label>
+  <span class="filter-counts" id="filter-counts"></span>
+</div>
+
+<h2>Confirmed matches (<span data-section-count="exact">0</span>)</h2>
+<div id="exact-section">
+<p class="empty">No exact matches right now.</p>
+</div>
+
+<h2 id="fuzzy-header">Probable matches — eyeball these (<span data-section-count="fuzzy">0</span>)</h2>
+<p class="sub" id="fuzzy-sub">Fuzzy name matches. May include false positives where two unrelated
+artists happen to have similar names.</p>
+<div id="fuzzy-section">
+<p class="empty">No fuzzy matches.</p>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'fantano-dc-labels';
+  function loadLabels() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch (e) { return {}; }
+  }
+  function saveLabels(labels) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(labels));
+  }
+  let labels = loadLabels();
+
+  function applyLabel(showEl, label) {
+    showEl.classList.toggle('going', label === 'going');
+    showEl.classList.toggle('skipped', label === 'skip');
+    showEl.querySelectorAll('.labels button').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.label === label);
+    });
+    const status = showEl.querySelector('.status');
+    if (status) {
+      status.textContent = label === 'going' ? '✓ going'
+                          : label === 'skip' ? 'skipped'
+                          : '';
+    }
+  }
+
+  // Initialize each show from localStorage and wire up buttons.
+  document.querySelectorAll('.show').forEach(showEl => {
+    const key = showEl.dataset.key;
+    if (!key) return;
+    if (labels[key]) applyLabel(showEl, labels[key]);
+    showEl.querySelectorAll('.labels button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const label = btn.dataset.label;
+        if (labels[key] === label) {
+          // Toggle off
+          delete labels[key];
+          applyLabel(showEl, null);
+        } else {
+          labels[key] = label;
+          applyLabel(showEl, label);
+        }
+        saveLabels(labels);
+        refilter();
+      });
+    });
+  });
+
+  // Filter logic
+  const hideSkipped = document.getElementById('hide-skipped');
+  const onlyUnlabeled = document.getElementById('only-unlabeled');
+  const hideFuzzy = document.getElementById('hide-fuzzy');
+  const counts = document.getElementById('filter-counts');
+
+  // Persist filter preferences too.
+  const FILTER_KEY = 'fantano-dc-filters';
+  try {
+    const f = JSON.parse(localStorage.getItem(FILTER_KEY) || '{}');
+    if (typeof f.hideSkipped === 'boolean') hideSkipped.checked = f.hideSkipped;
+    if (typeof f.onlyUnlabeled === 'boolean') onlyUnlabeled.checked = f.onlyUnlabeled;
+    if (typeof f.hideFuzzy === 'boolean') hideFuzzy.checked = f.hideFuzzy;
+  } catch (e) {}
+
+  function saveFilters() {
+    localStorage.setItem(FILTER_KEY, JSON.stringify({
+      hideSkipped: hideSkipped.checked,
+      onlyUnlabeled: onlyUnlabeled.checked,
+      hideFuzzy: hideFuzzy.checked,
+    }));
+  }
+
+  function refilter() {
+    let visible = 0, going = 0, skipped = 0;
+    document.querySelectorAll('.show').forEach(showEl => {
+      const label = labels[showEl.dataset.key];
+      let hide = false;
+      if (hideSkipped.checked && label === 'skip') hide = true;
+      if (onlyUnlabeled.checked && label) hide = true;
+      showEl.classList.toggle('hidden', hide);
+      if (label === 'going') going++;
+      if (label === 'skip') skipped++;
+      if (!hide) visible++;
+    });
+    // Fuzzy section visibility
+    const fuzzyEls = [document.getElementById('fuzzy-header'),
+                     document.getElementById('fuzzy-sub'),
+                     document.getElementById('fuzzy-section')];
+    fuzzyEls.forEach(el => { if (el) el.style.display = hideFuzzy.checked ? 'none' : ''; });
+    counts.textContent = `${going} going · ${skipped} skipped · ${visible} shown`;
+    saveFilters();
+  }
+
+  [hideSkipped, onlyUnlabeled, hideFuzzy].forEach(el => {
+    el.addEventListener('change', refilter);
+  });
+  refilter();
+})();
+</script>
+</body>
+</html>
