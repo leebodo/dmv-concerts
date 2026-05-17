@@ -45,6 +45,15 @@ FANTANO_URLS = [
     "https://theneedledrop.com/loved-list/2026/",
 ]
 
+# Score archive pages on TND. Each lists all reviews ever given that score,
+# with "Artist - Album" headings linking to /album-reviews/...
+# We paginate until no "Next" link is found.
+FANTANO_SCORE_URLS = [
+    (10, "https://theneedledrop.com/1010/"),
+    (9, "https://theneedledrop.com/910/"),
+    (8, "https://theneedledrop.com/810/"),
+]
+
 # Songkick sources. The metro page caps at ~1001 upcoming events, which in a
 # busy market like DC only covers the next ~2 months. Per-venue pages don't
 # have that cap and reach further into the future. We scrape both: the metro
@@ -152,6 +161,99 @@ def scrape_fantano(fetcher: Fetcher, url: str, refresh: bool) -> list[ListedAlbu
         html_text = fetcher.get(url)
         cache_path.write_text(html_text)
     return parse_fantano_html(html_text, year)
+
+
+def parse_score_page_html(html_text: str) -> list[tuple[str, str]]:
+    """Extract (artist, album) pairs from a TND score archive page.
+
+    These pages list reviews with text "Artist - Album" inside links pointing
+    to /album-reviews/. Same heuristic as parse_fantano_html, but we don't
+    apply the "loved list" / "next post" filters since the score pages have
+    different boilerplate."""
+    soup = BeautifulSoup(html_text, "html.parser")
+    seen: set[tuple[str, str]] = set()
+    out: list[tuple[str, str]] = []
+    for a in soup.find_all("a"):
+        href = a.get("href", "")
+        if "/album-reviews/" not in href:
+            continue
+        text = a.get_text(strip=True)
+        if not text or len(text) < 5:
+            continue
+        if " - " not in text and " – " not in text:
+            continue
+        sep = " - " if " - " in text else " – "
+        artist, _, album = text.partition(sep)
+        artist, album = artist.strip(), album.strip()
+        if not artist or not album:
+            continue
+        if len(artist) > 80 or len(album) > 120:
+            continue
+        key = (artist, album)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(key)
+    return out
+
+
+def scrape_fantano_scores(fetcher: Fetcher, refresh: bool
+                          ) -> dict[tuple[str, str], int]:
+    """Scrape /1010, /910, /810 and return {(norm_artist, norm_album): score}.
+
+    Lower scores lose to higher scores if the same album appears on multiple
+    pages (shouldn't happen but defensive)."""
+    score_map: dict[tuple[str, str], int] = {}
+    for score, base_url in FANTANO_SCORE_URLS:
+        cache_path = CACHE_DIR / f"fantano-score-{score}.json"
+        fresh = (cache_path.exists()
+                 and (time.time() - cache_path.stat().st_mtime) < 86400 * 7)
+        if not refresh and fresh:
+            print(f"    cache hit: {cache_path.name}")
+            cached = json.loads(cache_path.read_text())
+            for artist, album in cached:
+                key = (normalize(artist), normalize(album))
+                if score >= score_map.get(key, 0):
+                    score_map[key] = score
+            continue
+
+        print(f"    scraping {score}/10 pages…")
+        all_pairs: list[tuple[str, str]] = []
+        url = base_url
+        for page_num in range(1, 50):  # safety cap; TND has < 30 pages per score
+            print(f"      page {page_num}: {url}")
+            try:
+                html_text = fetcher.get(url)
+            except Exception as e:
+                print(f"        error: {e}; stopping")
+                break
+            pairs = parse_score_page_html(html_text)
+            if not pairs:
+                print("        no entries; done with this score")
+                break
+            all_pairs.extend(pairs)
+            print(f"        +{len(pairs)} entries")
+            # Find next page link.
+            soup = BeautifulSoup(html_text, "html.parser")
+            next_link = soup.find("a", string=re.compile(r"^\s*Next\s*$"))
+            if not next_link:
+                print("        no next page link; done")
+                break
+            next_url = next_link.get("href", "")
+            if not next_url:
+                break
+            if next_url.startswith("/"):
+                next_url = "https://theneedledrop.com" + next_url
+            url = next_url
+            time.sleep(0.6)
+
+        cache_path.write_text(json.dumps(all_pairs))
+        for artist, album in all_pairs:
+            key = (normalize(artist), normalize(album))
+            if score >= score_map.get(key, 0):
+                score_map[key] = score
+        print(f"    → {len(all_pairs)} entries cached at score {score}/10")
+    return score_map
 
 def load_rym() -> list[ListedAlbum]:
     if not RYM_FILE.exists():
@@ -494,6 +596,21 @@ HTML_TEMPLATE = """<!doctype html>
                  background: #eee; border-radius: 3px; color: #555;
                  margin-left: 0.3rem; }}
   .score {{ font-size: 0.75rem; color: var(--muted); }}
+
+  /* TND score badge — high contrast colors that reflect the score. */
+  .score-badge {{ display: inline-block; font-size: 0.72rem; font-weight: 600;
+                  padding: 1px 7px; border-radius: 3px; margin-left: 0.3rem;
+                  letter-spacing: 0.02em; }}
+  .score-badge.score-10 {{ background: #1a7a3e; color: #fff; }}
+  .score-badge.score-9  {{ background: #4a8a3a; color: #fff; }}
+  .score-badge.score-8  {{ background: #a09030; color: #fff; }}
+  .score-badge.score-8plus {{ background: #ddd; color: #444; }}
+
+  .show .tour {{ color: var(--muted); font-size: 0.85rem; margin-top: 0.15rem; }}
+  .show .tour-name {{ color: #444; }}
+  .tour-match {{ color: var(--going); font-weight: 600; font-size: 0.82rem;
+                 margin-left: 0.3rem; }}
+
   a {{ color: var(--accent); }}
   .empty {{ color: var(--muted); font-style: italic; }}
 
@@ -633,7 +750,50 @@ artists happen to have similar names.</p>
 </html>
 """
 
-def render_match(m: Match) -> str:
+# Patterns commonly used to delimit a tour name from an artist's name in
+# Songkick headliner strings. The artist comes first, then one of these
+# separators, then the tour name.
+_TOUR_SEPARATORS = re.compile(r"\s*[–—:\-]\s+(?=\S)")
+
+def extract_tour_name(headliner_full: str, artist_name: str) -> str:
+    """If the Songkick headliner string has a tour name appended after the
+    artist (e.g. 'James Blake – Trying Times Tour' or 'KALEO – Way Down We
+    Go Tour'), return the tour name. Otherwise return ''.
+
+    Heuristic: split on en-dash / em-dash / hyphen / colon (with surrounding
+    spaces), check if the part before equals (or starts with) the artist
+    name, return what's after."""
+    if not headliner_full:
+        return ""
+    # Try splitting on various tour-name separators.
+    parts = _TOUR_SEPARATORS.split(headliner_full, maxsplit=1)
+    if len(parts) != 2:
+        return ""
+    left, right = parts[0].strip(), parts[1].strip()
+    # Confirm the left side really is the matched artist (or close to it).
+    if normalize(left) == normalize(artist_name):
+        # Strip a trailing "Tour" if it's the only word (avoids "Trying Times")
+        # actually no — keep the full tour name, it's informative as-is.
+        return right
+    return ""
+
+def album_in_tour_name(album: str, tour_name: str) -> bool:
+    """Does the tour name reference the album? Substring check on normalized
+    forms after stripping common decorations from album titles."""
+    if not album or not tour_name:
+        return False
+    # Strip common parentheticals from album titles ("(EP)", "(2024)", etc.)
+    clean_album = re.sub(r"\s*\([^)]*\)", "", album).strip()
+    if not clean_album:
+        return False
+    n_tour = normalize(tour_name)
+    n_album = normalize(clean_album)
+    if not n_album or len(n_album) < 3:
+        return False
+    return n_album in n_tour
+
+
+def render_match(m: Match, score_map: dict[tuple[str, str], int]) -> str:
     date = html.escape(m.show.date or "TBD")
     matched = html.escape(m.matched_artist_name)
     if m.matched_artist_role == "headliner":
@@ -642,20 +802,57 @@ def render_match(m: Match) -> str:
         role = f"opening for {html.escape(m.show.headliner)}"
     venue = html.escape(m.show.venue) if m.show.venue else "venue tbd"
     city_str = f", {html.escape(m.show.city)}" if m.show.city else ""
-    album = html.escape(m.listed_album.album)
+    album = m.listed_album.album
     src = html.escape(m.listed_album.source)
     score_html = (f' <span class="score">(match score {m.score})</span>'
                   if m.score < 100 else "")
     # Use Songkick URL as stable storage key. It survives page regeneration.
     key = html.escape(m.show.url, quote=True)
+
+    # Look up the TND review score for the (artist, album) pair we're showing.
+    # First try the artist as listed in the loved set, then fall back to the
+    # Songkick name that actually matched. This handles cases where the listed
+    # artist on RYM/Fantano differs slightly from the Songkick name.
+    tnd_score: int | None = None
+    candidate_artists = [m.listed_album.artist, m.matched_artist_name]
+    for cand in candidate_artists:
+        n_artist = normalize(cand)
+        n_album = normalize(album)
+        if (n_artist, n_album) in score_map:
+            tnd_score = score_map[(n_artist, n_album)]
+            break
+
+    # Build score badge: prefer the precise numeric score, fall back to a tier.
+    if tnd_score is not None:
+        score_badge_class = f"score-badge score-{tnd_score}"
+        score_badge_text = f"{tnd_score}/10"
+    elif "rym-10" in m.listed_album.source:
+        score_badge_class = "score-badge score-10"
+        score_badge_text = "10/10"
+    else:
+        score_badge_class = "score-badge score-8plus"
+        score_badge_text = "8+/10"
+    score_badge = f'<span class="{score_badge_class}">{score_badge_text}</span>'
+
+    # Tour name extraction & album-touring heuristic.
+    tour_name = extract_tour_name(m.show.headliner, m.matched_artist_name)
+    tour_html = ""
+    if tour_name:
+        is_album_tour = album_in_tour_name(album, tour_name)
+        tour_indicator = ' <span class="tour-match">🎯 touring this album</span>' if is_album_tour else ""
+        tour_html = (f'<div class="tour">tour: <span class="tour-name">'
+                     f'{html.escape(tour_name)}</span>{tour_indicator}</div>')
+
     return f"""
     <div class="show" data-key="{key}">
       <div><span class="date">{date}</span> &middot;
            <span class="artist">{matched}</span>
+           {score_badge}
            <span class="source-tag">{src}</span>{score_html}</div>
       <div class="meta">{role} &middot; {venue}{city_str}
            &middot; <a href="{html.escape(m.show.url)}">tickets</a></div>
-      <div class="album">listed for: {album}</div>
+      <div class="album">listed for: {html.escape(album)}</div>
+      {tour_html}
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -686,16 +883,17 @@ def _dedupe_matches(matches: list[Match]) -> list[Match]:
 
 
 def write_html(exact: list[Match], fuzzy: list[Match], n_loved: int,
-               n_shows: int, out_path: pathlib.Path) -> None:
+               n_shows: int, score_map: dict[tuple[str, str], int],
+               out_path: pathlib.Path) -> None:
     exact = _dedupe_matches(exact)
     fuzzy = _dedupe_matches(fuzzy)
     exact_sorted = sorted(exact, key=lambda m: (m.show.date or "9999",
                                                 m.show.headliner))
     fuzzy_sorted = sorted(fuzzy, key=lambda m: (-m.score,
                                                 m.show.date or "9999"))
-    exact_html = ("\n".join(render_match(m) for m in exact_sorted)
+    exact_html = ("\n".join(render_match(m, score_map) for m in exact_sorted)
                   or '<p class="empty">No exact matches right now.</p>')
-    fuzzy_html = ("\n".join(render_match(m) for m in fuzzy_sorted)
+    fuzzy_html = ("\n".join(render_match(m, score_map) for m in fuzzy_sorted)
                   or '<p class="empty">No fuzzy matches.</p>')
     out_path.write_text(HTML_TEMPLATE.format(
         generated=dt.datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -717,21 +915,25 @@ def main():
 
     fetcher = Fetcher()
     try:
-        print("\n[1/3] Gathering Fantano-loved artists…")
+        print("\n[1/4] Gathering Fantano-loved artists…")
         loved = gather_loved(fetcher, refresh=args.refresh)
         print(f"    → {len(loved)} unique loved artists")
 
-        print("\n[2/3] Scraping Songkick DC metro calendar…")
+        print("\n[2/4] Scraping TND review scores (8/10, 9/10, 10/10)…")
+        score_map = scrape_fantano_scores(fetcher, refresh=args.refresh)
+        print(f"    → {len(score_map)} scored albums")
+
+        print("\n[3/4] Scraping Songkick DC metro calendar…")
         shows = scrape_songkick_metro(fetcher, max_pages=args.max_pages)
         print(f"    → {len(shows)} shows total")
 
-        print("\n[3/3] Matching…")
+        print("\n[4/4] Matching…")
         exact, fuzzy = match_shows(shows, loved)
         print(f"    → {len(exact)} exact, {len(fuzzy)} fuzzy")
 
         out = HERE / "dc_shows.html"
         write_html(exact, fuzzy, n_loved=len(loved), n_shows=len(shows),
-                   out_path=out)
+                   score_map=score_map, out_path=out)
         print(f"\nWrote {out}. Open it in your browser.")
     finally:
         fetcher.close()
