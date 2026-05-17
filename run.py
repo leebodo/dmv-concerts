@@ -663,8 +663,32 @@ def render_match(m: Match) -> str:
       </div>
     </div>"""
 
+def _dedupe_matches(matches: list[Match]) -> list[Match]:
+    """Collapse duplicate matches where the same artist plays the same venue on
+    the same date but Songkick has the gig listed under multiple URLs (e.g. a
+    festival entry plus an individual artist entry for the same night).
+    
+    When duplicates exist, prefer the "headliner" version over the "support"
+    version, since the headliner billing carries more information.
+    """
+    by_key: dict[tuple[str, str, str], Match] = {}
+    for m in matches:
+        n = normalize(m.matched_artist_name)
+        key = (m.show.date, n, m.show.venue)
+        existing = by_key.get(key)
+        if existing is None:
+            by_key[key] = m
+        else:
+            # Prefer headliner billings over support billings.
+            if existing.matched_artist_role == "support" and m.matched_artist_role == "headliner":
+                by_key[key] = m
+    return list(by_key.values())
+
+
 def write_html(exact: list[Match], fuzzy: list[Match], n_loved: int,
                n_shows: int, out_path: pathlib.Path) -> None:
+    exact = _dedupe_matches(exact)
+    fuzzy = _dedupe_matches(fuzzy)
     exact_sorted = sorted(exact, key=lambda m: (m.show.date or "9999",
                                                 m.show.headliner))
     fuzzy_sorted = sorted(fuzzy, key=lambda m: (-m.score,
