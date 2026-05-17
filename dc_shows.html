@@ -38,6 +38,21 @@
                  background: #eee; border-radius: 3px; color: #555;
                  margin-left: 0.3rem; }
   .score { font-size: 0.75rem; color: var(--muted); }
+
+  /* TND score badge — high contrast colors that reflect the score. */
+  .score-badge { display: inline-block; font-size: 0.72rem; font-weight: 600;
+                  padding: 1px 7px; border-radius: 3px; margin-left: 0.3rem;
+                  letter-spacing: 0.02em; }
+  .score-badge.score-10 { background: #1a7a3e; color: #fff; }
+  .score-badge.score-9  { background: #4a8a3a; color: #fff; }
+  .score-badge.score-8  { background: #a09030; color: #fff; }
+  .score-badge.score-8plus { background: #ddd; color: #444; }
+
+  .show .tour { color: var(--muted); font-size: 0.85rem; margin-top: 0.15rem; }
+  .show .tour-name { color: #444; }
+  .tour-match { color: var(--going); font-weight: 600; font-size: 0.82rem;
+                 margin-left: 0.3rem; }
+
   a { color: var(--accent); }
   .empty { color: var(--muted); font-style: italic; }
 
@@ -53,8 +68,8 @@
 </head>
 <body>
 <h1>Fantano artists with upcoming DMV shows</h1>
-<p class="sub">Generated 2026-05-17 22:53. 201 unique loved artists across the
-three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
+<p class="sub">Generated 2026-05-17 23:34. 201 unique loved artists across the
+three lists, checked against 1066 upcoming DMV shows on Songkick.</p>
 
 <div class="filters">
   <label><input type="checkbox" id="hide-skipped" checked> Hide skipped</label>
@@ -69,10 +84,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43025129-by-storm-at-songbyrd">
       <div><span class="date">2026-05-17</span> &middot;
            <span class="artist">By Storm</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; Songbyrd, Washington
            &middot; <a href="https://www.songkick.com/concerts/43025129-by-storm-at-songbyrd">tickets</a></div>
       <div class="album">listed for: My Ghosts Go Ghost</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -83,10 +100,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/festivals/3772216-my-body-my-yaya-bey-nourished-by-time-and-more/id/43066281-my-body-my-festival-yaya-bey-nourished-by-time-and-more-2026">
       <div><span class="date">2026-05-28</span> &middot;
            <span class="artist">Nourished By Time</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/festivals/3772216-my-body-my-yaya-bey-nourished-by-time-and-more/id/43066281-my-body-my-festival-yaya-bey-nourished-by-time-and-more-2026">tickets</a></div>
       <div class="album">listed for: The Passionate Ones</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -97,10 +116,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43089042-built-to-spill-at-930-club">
       <div><span class="date">2026-06-01</span> &middot;
            <span class="artist">Guerilla Toss</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43089042-built-to-spill-at-930-club">tickets</a></div>
       <div class="album">listed for: You&#x27;re Weird Now</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -111,10 +132,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43045606-james-blake-at-anthem">
       <div><span class="date">2026-06-02</span> &middot;
            <span class="artist">James Blake</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; The Anthem, Washington
            &middot; <a href="https://www.songkick.com/concerts/43045606-james-blake-at-anthem">tickets</a></div>
       <div class="album">listed for: Trying Times</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -125,10 +148,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43055069-beach-boys-at-wolf-trap">
       <div><span class="date">2026-06-07</span> &middot;
            <span class="artist">The Beach Boys</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Wolf Trap, Vienna
            &middot; <a href="https://www.songkick.com/concerts/43055069-beach-boys-at-wolf-trap">tickets</a></div>
       <div class="album">listed for: Pet Sounds</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -139,10 +164,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43047387-hemlocke-springs-at-930-club">
       <div><span class="date">2026-06-09</span> &middot;
            <span class="artist">Hemlocke Springs</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43047387-hemlocke-springs-at-930-club">tickets</a></div>
       <div class="album">listed for: the apple tree under the sea</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -153,10 +180,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43093273-jill-scott-at-theater-at-mgm-national-harbor">
       <div><span class="date">2026-06-11</span> &middot;
            <span class="artist">Jill Scott</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; The Theater at MGM National Harbor, National Harbor
            &middot; <a href="https://www.songkick.com/concerts/43093273-jill-scott-at-theater-at-mgm-national-harbor">tickets</a></div>
       <div class="album">listed for: To Whom This May Concern</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -167,10 +196,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43073303-underscores-us-at-930-club">
       <div><span class="date">2026-06-11</span> &middot;
            <span class="artist">underscores (US)</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43073303-underscores-us-at-930-club">tickets</a></div>
       <div class="album">listed for: U</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -181,10 +212,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43093153-jill-scott-at-theater-at-mgm-national-harbor">
       <div><span class="date">2026-06-13</span> &middot;
            <span class="artist">Jill Scott</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; The Theater at MGM National Harbor, National Harbor
            &middot; <a href="https://www.songkick.com/concerts/43093153-jill-scott-at-theater-at-mgm-national-harbor">tickets</a></div>
       <div class="album">listed for: To Whom This May Concern</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -195,10 +228,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43093380-jill-scott-at-theater-at-mgm-national-harbor">
       <div><span class="date">2026-06-14</span> &middot;
            <span class="artist">Jill Scott</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; The Theater at MGM National Harbor, National Harbor
            &middot; <a href="https://www.songkick.com/concerts/43093380-jill-scott-at-theater-at-mgm-national-harbor">tickets</a></div>
       <div class="album">listed for: To Whom This May Concern</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -209,10 +244,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43096775-jill-scott-at-theater-at-mgm-national-harbor">
       <div><span class="date">2026-06-23</span> &middot;
            <span class="artist">Jill Scott</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">headlining &middot; The Theater at MGM National Harbor, National Harbor
            &middot; <a href="https://www.songkick.com/concerts/43096775-jill-scott-at-theater-at-mgm-national-harbor">tickets</a></div>
       <div class="album">listed for: To Whom This May Concern</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -223,10 +260,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43155842-strokes-at-merriweather-post-pavilion">
       <div><span class="date">2026-06-27</span> &middot;
            <span class="artist">The Strokes</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Merriweather Post Pavilion, Columbia
            &middot; <a href="https://www.songkick.com/concerts/43155842-strokes-at-merriweather-post-pavilion">tickets</a></div>
       <div class="album">listed for: Is This It</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -237,10 +276,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43126978-bob-dylan-at-wolf-trap">
       <div><span class="date">2026-07-24</span> &middot;
            <span class="artist">Bob Dylan</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Wolf Trap, Vienna
            &middot; <a href="https://www.songkick.com/concerts/43126978-bob-dylan-at-wolf-trap">tickets</a></div>
       <div class="album">listed for: The Freewheelin&#x27; Bob Dylan</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -251,10 +292,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43126980-bob-dylan-at-wolf-trap">
       <div><span class="date">2026-07-25</span> &middot;
            <span class="artist">Bob Dylan</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Wolf Trap, Vienna
            &middot; <a href="https://www.songkick.com/concerts/43126980-bob-dylan-at-wolf-trap">tickets</a></div>
       <div class="album">listed for: The Freewheelin&#x27; Bob Dylan</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -265,10 +308,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43123227-mon-laferte-at-unknown-venue">
       <div><span class="date">2026-07-31</span> &middot;
            <span class="artist">Mon Laferte</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; venue tbd
            &middot; <a href="https://www.songkick.com/concerts/43123227-mon-laferte-at-unknown-venue">tickets</a></div>
       <div class="album">listed for: FEMME FATALE</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -279,10 +324,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/42853085-foo-fighters-at-nationals-park">
       <div><span class="date">2026-08-17</span> &middot;
            <span class="artist">Queens of the Stone Age</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">opening for Foo Fighters &middot; Nationals Park, Washington
            &middot; <a href="https://www.songkick.com/concerts/42853085-foo-fighters-at-nationals-park">tickets</a></div>
       <div class="album">listed for: Songs for the Deaf</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -293,10 +340,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/42799687-my-chemical-romance-at-nationals-park">
       <div><span class="date">2026-08-18</span> &middot;
            <span class="artist">My Chemical Romance</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Nationals Park, Washington
            &middot; <a href="https://www.songkick.com/concerts/42799687-my-chemical-romance-at-nationals-park">tickets</a></div>
       <div class="album">listed for: The Black Parade</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -307,10 +356,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43030892-robyn-at-anthem">
       <div><span class="date">2026-09-08</span> &middot;
            <span class="artist">Nourished By Time</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">opening for Robyn &middot; The Anthem, Washington
            &middot; <a href="https://www.songkick.com/concerts/43030892-robyn-at-anthem">tickets</a></div>
       <div class="album">listed for: The Passionate Ones</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -321,10 +372,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43053708-robyn-at-anthem">
       <div><span class="date">2026-09-09</span> &middot;
            <span class="artist">Nourished By Time</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">opening for Robyn &middot; The Anthem, Washington
            &middot; <a href="https://www.songkick.com/concerts/43053708-robyn-at-anthem">tickets</a></div>
       <div class="album">listed for: The Passionate Ones</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -335,10 +388,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/42854467-iron-maiden-at-jiffy-lube-live">
       <div><span class="date">2026-09-11</span> &middot;
            <span class="artist">Iron Maiden</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Jiffy Lube Live, Bristow
            &middot; <a href="https://www.songkick.com/concerts/42854467-iron-maiden-at-jiffy-lube-live">tickets</a></div>
       <div class="album">listed for: The Number of the Beast</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -349,10 +404,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43119835-wutang-clan-at-jiffy-lube-live">
       <div><span class="date">2026-09-15</span> &middot;
            <span class="artist">Wu-Tang Clan</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Jiffy Lube Live, Bristow
            &middot; <a href="https://www.songkick.com/concerts/43119835-wutang-clan-at-jiffy-lube-live">tickets</a></div>
       <div class="album">listed for: Enter the Wu-Tang (36 Chambers)</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -363,10 +420,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43129630-erykah-badu-at-filene-center-at-wolf-trap">
       <div><span class="date">2026-09-20</span> &middot;
            <span class="artist">De La Soul</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; Filene Center at Wolf Trap, Vienna
            &middot; <a href="https://www.songkick.com/concerts/43129630-erykah-badu-at-filene-center-at-wolf-trap">tickets</a></div>
       <div class="album">listed for: Cabin in the Sky</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -377,10 +436,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43168248-jane-remover-at-930-club">
       <div><span class="date">2026-09-23</span> &middot;
            <span class="artist">Jane Remover</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43168248-jane-remover-at-930-club">tickets</a></div>
       <div class="album">listed for: Revengeseekerz</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -391,10 +452,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/festivals/3784630-all-things-go-friday-pass-with-mitski-ethel-cain-rainbow-kitten-surprise-and-more/id/43200801-all-things-go-festival-friday-pass-with-mitski-ethel-cain-rainbow-kitten-surprise-and-more-2026">
       <div><span class="date">2026-09-25</span> &middot;
            <span class="artist">Ethel Cain</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; Merriweather Post Pavilion, Columbia
            &middot; <a href="https://www.songkick.com/festivals/3784630-all-things-go-friday-pass-with-mitski-ethel-cain-rainbow-kitten-surprise-and-more/id/43200801-all-things-go-festival-friday-pass-with-mitski-ethel-cain-rainbow-kitten-surprise-and-more-2026">tickets</a></div>
       <div class="album">listed for: Perverts (EP)</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -405,10 +468,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/festivals/3783717-all-things-go-dc/id/43190964-all-things-go-festival-dc-2026">
       <div><span class="date">2026-09-25</span> &middot;
            <span class="artist">Father John Misty</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">opening for All Things Go Festival DC 2026 &middot; Merriweather Post Pavilion, Columbia
            &middot; <a href="https://www.songkick.com/festivals/3783717-all-things-go-dc/id/43190964-all-things-go-festival-dc-2026">tickets</a></div>
       <div class="album">listed for: Pure Comedy</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -419,10 +484,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/festivals/3784631-all-things-go-saturday-pass-with-hayley-williams-muna-zara-larsson-and-more/id/43200802-all-things-go-festival-saturday-pass-with-hayley-williams-muna-zara-larsson-and-more-2026">
       <div><span class="date">2026-09-26</span> &middot;
            <span class="artist">Hemlocke Springs</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2026</span></div>
       <div class="meta">opening for All Things Go Festival (Saturday Pass) with Hayley Williams, Muna, Zara Larsson, and more! 2026 &middot; Merriweather Post Pavilion, Columbia
            &middot; <a href="https://www.songkick.com/festivals/3784631-all-things-go-saturday-pass-with-hayley-williams-muna-zara-larsson-and-more/id/43200802-all-things-go-festival-saturday-pass-with-hayley-williams-muna-zara-larsson-and-more-2026">tickets</a></div>
       <div class="album">listed for: the apple tree under the sea</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -433,10 +500,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43081913-gorillaz-at-capital-one-arena">
       <div><span class="date">2026-09-26</span> &middot;
            <span class="artist">Gorillaz</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">loved-2026,rym-10</span></div>
       <div class="meta">headlining &middot; Capital One Arena, Washington
            &middot; <a href="https://www.songkick.com/concerts/43081913-gorillaz-at-capital-one-arena">tickets</a></div>
       <div class="album">listed for: The Mountain</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -447,10 +516,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43081913-gorillaz-at-capital-one-arena">
       <div><span class="date">2026-09-26</span> &middot;
            <span class="artist">Little Simz</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; Capital One Arena, Washington
            &middot; <a href="https://www.songkick.com/concerts/43081913-gorillaz-at-capital-one-arena">tickets</a></div>
       <div class="album">listed for: Lotus</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -461,10 +532,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/festivals/3784632-all-things-go-sunday-pass-with-brandi-carlile-lola-young-sienna-spiro-and-more/id/43200806-all-things-go-festival-sunday-pass-with-brandi-carlile-lola-young-sienna-spiro-and-more-2026">
       <div><span class="date">2026-09-27</span> &middot;
            <span class="artist">Father John Misty</span>
+           <span class="score-badge score-9">9/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">opening for All Things Go Festival (Sunday Pass) with Brandi Carlile, Lola Young, Sienna Spiro, and more! 2026 &middot; Merriweather Post Pavilion, Columbia
            &middot; <a href="https://www.songkick.com/festivals/3784632-all-things-go-sunday-pass-with-brandi-carlile-lola-young-sienna-spiro-and-more/id/43200806-all-things-go-festival-sunday-pass-with-brandi-carlile-lola-young-sienna-spiro-and-more-2026">tickets</a></div>
       <div class="album">listed for: Pure Comedy</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -475,10 +548,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43123283-weezer-at-capital-one-arena">
       <div><span class="date">2026-10-02</span> &middot;
            <span class="artist">Weezer</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; Capital One Arena, Washington
            &middot; <a href="https://www.songkick.com/concerts/43123283-weezer-at-capital-one-arena">tickets</a></div>
       <div class="album">listed for: Weezer (Blue Album)</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -489,10 +564,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43186236-dj-shadow-at-fillmore-silver-spring">
       <div><span class="date">2026-10-03</span> &middot;
            <span class="artist">DJ Shadow</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; The Fillmore Silver Spring, Silver Spring
            &middot; <a href="https://www.songkick.com/concerts/43186236-dj-shadow-at-fillmore-silver-spring">tickets</a></div>
       <div class="album">listed for: Endtroducing</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -503,10 +580,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43162468-jessie-ware-at-anthem">
       <div><span class="date">2026-10-10</span> &middot;
            <span class="artist">Jessie Ware</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2026,rym-10</span></div>
       <div class="meta">headlining &middot; The Anthem, Washington
            &middot; <a href="https://www.songkick.com/concerts/43162468-jessie-ware-at-anthem">tickets</a></div>
       <div class="album">listed for: Superbloom</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -517,10 +596,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43176082-geese-at-anthem">
       <div><span class="date">2026-11-06</span> &middot;
            <span class="artist">Geese</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; The Anthem, Washington
            &middot; <a href="https://www.songkick.com/concerts/43176082-geese-at-anthem">tickets</a></div>
       <div class="album">listed for: Getting Killed</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -531,10 +612,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43189057-geese-at-anthem">
       <div><span class="date">2026-11-13</span> &middot;
            <span class="artist">Geese</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span></div>
       <div class="meta">headlining &middot; The Anthem, Washington
            &middot; <a href="https://www.songkick.com/concerts/43189057-geese-at-anthem">tickets</a></div>
       <div class="album">listed for: Getting Killed</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -545,10 +628,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43161888-they-might-be-giants-at-930-club">
       <div><span class="date">2026-11-19</span> &middot;
            <span class="artist">They Might Be Giants</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43161888-they-might-be-giants-at-930-club">tickets</a></div>
       <div class="album">listed for: Lincoln</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -559,10 +644,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43161798-they-might-be-giants-at-930-club">
       <div><span class="date">2026-11-20</span> &middot;
            <span class="artist">They Might Be Giants</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43161798-they-might-be-giants-at-930-club">tickets</a></div>
       <div class="album">listed for: Lincoln</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -573,10 +660,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43173445-they-might-be-giants-at-930-club">
       <div><span class="date">2026-11-21</span> &middot;
            <span class="artist">They Might Be Giants</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43173445-they-might-be-giants-at-930-club">tickets</a></div>
       <div class="album">listed for: Lincoln</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -587,10 +676,12 @@ three lists, checked against 1067 upcoming DMV shows on Songkick.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43172760-they-might-be-giants-at-930-club">
       <div><span class="date">2026-11-22</span> &middot;
            <span class="artist">They Might Be Giants</span>
+           <span class="score-badge score-10">10/10</span>
            <span class="source-tag">rym-10</span></div>
       <div class="meta">headlining &middot; 9:30 Club, Washington
            &middot; <a href="https://www.songkick.com/concerts/43172760-they-might-be-giants-at-930-club">tickets</a></div>
       <div class="album">listed for: Lincoln</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
@@ -607,10 +698,12 @@ artists happen to have similar names.</p>
     <div class="show" data-key="https://www.songkick.com/concerts/43201105-horsegiirl-at-berhta">
       <div><span class="date">2026-10-24</span> &middot;
            <span class="artist">Horsegiirl</span>
+           <span class="score-badge score-8">8/10</span>
            <span class="source-tag">loved-2025</span> <span class="score">(match score 94)</span></div>
       <div class="meta">headlining &middot; BERHTA, Washington
            &middot; <a href="https://www.songkick.com/concerts/43201105-horsegiirl-at-berhta">tickets</a></div>
       <div class="album">listed for: Phonetics On and On</div>
+      
       <div class="labels">
         <button data-label="going" type="button">going</button>
         <button data-label="skip" type="button">skip</button>
