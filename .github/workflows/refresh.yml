@@ -2,31 +2,32 @@ name: refresh
 
 on:
   schedule:
-    # Runs at 14:00 UTC daily (10:00 AM Eastern Time)
     - cron: '0 14 * * *'
-  # Allows you to trigger the run manually from the GitHub interface
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
-  contents: write 
+  contents: write
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
-        with: 
+        with:
           python-version: '3.12'
-          
+
       - run: pip install beautifulsoup4 rapidfuzz playwright
+
       - run: python -m playwright install chromium
+
       - run: python run.py --refresh
-      
+
       - run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add dc_shows.html cache/ rym_10s.txt
           git commit -m "refresh $(date -I)" || echo "nothing to commit"
+          git pull --rebase
           git push
