@@ -1,0 +1,193 @@
+# Anthony Fantano 10/10 albums from RYM, one per line as 'Artist - Album'.
+# Source: https://rateyourmusic.com/list/nickzadr/anthony-fantano-theneedledrop-10_10-albums/
+# Lines starting with # are ignored.
+#
+# This file was bootstrapped from a copy-paste of the RYM list. Update it
+# periodically by visiting the source URL and adding new entries.
+
+# =========================================================================
+# CONFIRMED 10/10s
+# =========================================================================
+
+Bob Dylan - The Freewheelin' Bob Dylan
+Bob Dylan - The Times They Are A-Changin'
+Bob Dylan - Highway 61 Revisited
+The Beach Boys - Pet Sounds
+Bob Dylan - Blonde on Blonde
+The Velvet Underground & Nico - The Velvet Underground & Nico
+The Beatles - The Beatles (White Album)
+The Velvet Underground - The Velvet Underground
+King Crimson - In the Court of the Crimson King
+The Beatles - Abbey Road
+Frank Zappa - Hot Rats
+Miles Davis - Bitches Brew
+The Stooges - Fun House
+Marvin Gaye - What's Going On
+The Mahavishnu Orchestra - The Inner Mounting Flame
+David Bowie - The Rise and Fall of Ziggy Stardust and The Spiders From Mars
+Lou Reed - Transformer
+Iggy and The Stooges - Raw Power
+Frank Zappa - Apostrophe
+Wire - Pink Flag
+David Bowie - Station to Station
+Television - Marquee Moon
+Joy Division - Unknown Pleasures
+The Slits - Cut
+The Clash - London Calling
+Talking Heads - Remain in Light
+Dead Kennedys - Plastic Surgery Disasters
+Violent Femmes - Violent Femmes
+Misfits - Earth A.D. / Wolfs Blood
+Tom Waits - Rain Dogs
+Metallica - Master of Puppets
+Public Enemy - It Takes a Nation of Millions to Hold Us Back
+They Might Be Giants - Lincoln
+Beastie Boys - Paul's Boutique
+Fugazi - Repeater
+A Tribe Called Quest - The Low End Theory
+my bloody valentine - Loveless
+Tom Waits - Bone Machine
+Dr. Dre - The Chronic
+Earth - Earth 2: Special Low Frequency Version
+Wu-Tang Clan - Enter the Wu-Tang (36 Chambers)
+Nas - Illmatic
+Weezer - Weezer (Blue Album)
+Drive Like Jehu - Yank Crime
+OutKast - ATLiens
+Swans - Soundtracks for the Blind
+Belle and Sebastian - If You're Feeling Sinister
+Radiohead - OK Computer
+The Misfits - Static Age
+Neutral Milk Hotel - In the Aeroplane Over the Sea
+Lauryn Hill - The Miseducation of Lauryn Hill
+The Roots - Things Fall Apart
+Godspeed You Black Emperor! - Lift Yr. Skinny Fists Like Antennas to Heaven!
+Radiohead - Kid A
+Common - Like Water for Chocolate
+OutKast - Stankonia
+Björk - Vespertine
+Converge - Jane Doe
+The Microphones - The Glow Pt. 2
+Threebrain - Weeeeee!
+Tom Waits - Blood Money
+The Postal Service - Give Up
+The Unicorns - Who Will Cut Our Hair When We're Gone?
+Kanye West - The College Dropout
+Madvillain - Madvillainy
+My Chemical Romance - The Black Parade
+LCD Soundsystem - Sound of Silver
+LCD Soundsystem - This Is Happening
+Death Grips - The Money Store
+Swans - To Be Kind
+Kendrick Lamar - To Pimp a Butterfly
+KIDS SEE GHOSTS - KIDS SEE GHOSTS
+Daughters - You Won't Get What You Want
+Charli XCX - Charli
+SPELLLING - The Turning Wheel
+Lingua Ignota - Sinner Get Ready
+
+# EPs
+The Cramps - Gravest Hits
+The Misfits - Beware
+Minor Threat - Minor Threat
+Dead Kennedys - In God We Trust Inc.
+Minor Threat - In My Eyes
+Minor Threat - Out of Step
+
+# Singles (omitted for matching — most artists are already in the album list
+# above. Uncomment any you want to include.)
+# Queen - Bohemian Rhapsody
+# Technotronic - Pump Up the Jam
+# Rage Against the Machine - Bulls on Parade
+# UGK - Int'l Players Anthem
+# Gorillaz - DoYaThing
+# Fleet Foxes - Helplessness Blues
+# The Knife - A Tooth for an Eye
+# Mount Eerie - Real Death
+# Father John Misty - Pure Comedy
+# Childish Gambino - This Is America
+# Alex Cameron - Far From Born Again
+
+# =========================================================================
+# PROBABLE 10/10s (classics-week reviews, S-tier rankings, etc.)
+# =========================================================================
+
+Mingus - The Black Saint and the Sinner Lady
+Roland Kirk - I Talk With the Spirits
+Nina Simone - Pastel Blues
+Johnny Cash - At Folsom Prison
+The Jimi Hendrix Experience - Electric Ladyland
+Roland Kirk - The Inflated Tear
+Miles Davis - In a Silent Way
+Led Zeppelin - Led Zeppelin IV
+Alice Coltrane - Journey in Satchidananda
+Yes - Close to the Edge
+Kraftwerk - Radio-Aktivität
+Patti Smith - Horses
+Led Zeppelin - Physical Graffiti
+Tangerine Dream - Phaedra
+Stevie Wonder - Songs in the Key of Life
+Pink Floyd - Animals
+Kraftwerk - Trans-Europe Express
+Yellow Magic Orchestra - Solid State Survivor
+Pink Floyd - The Wall
+Bauhaus - In the Flat Field
+Mission of Burma - Vs.
+Iron Maiden - The Number of the Beast
+Michael Jackson - Thriller
+Bad Brains - Bad Brains
+Prince and The Revolution - Purple Rain
+Kate Bush - Hounds of Love
+N.W.A - Straight Outta Compton
+Pixies - Doolittle
+The Cure - Disintegration
+Cocteau Twins - Heaven or Las Vegas
+Slint - Spiderland
+Talk Talk - Laughing Stock
+Aphex Twin - Selected Ambient Works 85-92
+Nirvana - In Utero
+A Tribe Called Quest - Midnight Marauders
+Nine Inch Nails - The Downward Spiral
+Portishead - Dummy
+Ween - Chocolate and Cheese
+Emperor - In the Nightside Eclipse
+Three-6 Mafia - Mystic Stylez
+Elliott Smith - Elliott Smith
+GZA - Liquid Swords
+Big L - Lifestylez ov da Poor & Dangerous
+DJ Shadow - Endtroducing
+Tool - Ænima
+Daft Punk - Homework
+Squarepusher - Hard Normal Daddy
+Janet Jackson - The Velvet Rope
+Mos Def - Black on Both Sides
+Deltron 3030 - Deltron 3030
+System of a Down - Toxicity
+The Strokes - Is This It
+Tool - Lateralus
+Cannibal Ox - The Cold Vein
+Daft Punk - Discovery
+Interpol - Turn On the Bright Lights
+Queens of the Stone Age - Songs for the Deaf
+Sweet Trip - Velocity : Design : Comfort
+The White Stripes - Elephant
+The Strokes - Room on Fire
+MF DOOM - Mm..Food
+Arcade Fire - Funeral
+M.I.A. - Arular
+Lightning Bolt - Hypermagic Mountain
+Gorillaz - Demon Days
+Electric Masada - At the Mountains of Madness
+Sleater-Kinney - The Woods
+Sunn O))) - Black One
+Clipse - Hell Hath No Fury
+Burial - Untrue
+Radiohead - In Rainbows
+Sunn O))) - Monoliths & Dimensions
+Gorillaz - Plastic Beach
+Death Grips - Exmilitary
+Fleet Foxes - Helplessness Blues
+Tim Hecker - Virgins
+Danny Brown - Atrocity Exhibition
+Father John Misty - Pure Comedy
+Jessie Ware - What's Your Pleasure?
