@@ -10,17 +10,86 @@
             --xoxo-bbc: #f9f28d;
             --xoxo-mc1: #ffcc00;
         }
-    </style>
-    <link rel="stylesheet" type="text/css" href="/assets/css/fontello.css?v=7b2c742f0b">
-    <link rel="stylesheet" type="text/css" href="/assets/css/inline.css?v=7b2c742f0b">
-    <link rel="stylesheet" type="text/css" href="/assets/css/swiper.css?v=7b2c742f0b">
-    <link rel="stylesheet" type="text/css" href="/assets/css/widgets.css?v=7b2c742f0b">
-    <link rel="stylesheet" type="text/css" href="/assets/css/magnific.popup.css?v=7b2c742f0b">
-    <link rel="stylesheet" type="text/css" href="/assets/css/base.css?v=7b2c742f0b">
-    <link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=7b2c742f0b">
-    <link rel="stylesheet" type="text/css" href="/assets/css/embeds.css?v=7b2c742f0b">
 
-    <script type="text/javascript" async="" src="//carbon-cdn.ccgateway.net/script?id=theneedledrop.com&amp;parentId=5bb3e20859"></script><script async="" src="https://c.amazon-adsystem.com/aax2/apstag.js" id="pw_aps_tag"></script><script async="" src="//cdn.confiant-integrations.net/gptprebidnative/202609181619/wrap.js"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-NH85T9M4M1&amp;cx=c&amp;gtm=4e69m0"></script><script>
+        /* This is enabled only by the /links/ logo handoff. It keeps the
+         * destination covered until the DOM is ready, then crossfades the
+         * site in. Normal visits never receive the class. */
+        .tnd_link_reveal_cover {
+            display: none;
+        }
+
+        html.tnd_link_reveal {
+            background: var(--xoxo-bbc, #f9f28d);
+        }
+
+        html.tnd_link_reveal .tnd_link_reveal_cover {
+            position: fixed;
+            z-index: 2147483647;
+            inset: 0;
+            display: block;
+            background: var(--xoxo-bbc, #f9f28d);
+            opacity: 1;
+            pointer-events: auto;
+            will-change: opacity;
+            transition: opacity 340ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.tnd_link_reveal:not(.tnd_link_reveal_ready) body > :not(.tnd_link_reveal_cover) {
+            opacity: 0;
+        }
+
+        html.tnd_link_reveal body > :not(.tnd_link_reveal_cover) {
+            transition: opacity 340ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.tnd_link_reveal.tnd_link_reveal_ready .tnd_link_reveal_cover {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        html.tnd_link_reveal.tnd_link_reveal_ready body > :not(.tnd_link_reveal_cover) {
+            opacity: 1;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html.tnd_link_reveal .tnd_link_reveal_cover,
+            html.tnd_link_reveal body > :not(.tnd_link_reveal_cover) {
+                transition: none;
+            }
+        }
+    </style>
+    <script type="text/javascript" async="" src="//carbon-cdn.ccgateway.net/script?id=theneedledrop.com&amp;parentId=5bb3e20859"></script><script async="" src="https://c.amazon-adsystem.com/aax2/apstag.js" id="pw_aps_tag"></script><script async="" src="//cdn.confiant-integrations.net/gptprebidnative/202609181619/wrap.js"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-NH85T9M4M1&amp;cx=c&amp;gtm=4e69n0"></script><script>
+        /* The link-in-bio feed stores a short-lived, same-origin marker just
+         * before its home-logo navigation. Read and clear it before the page
+         * paints so direct, bookmarked, and refreshed visits remain normal. */
+        (function () {
+            try {
+                var key = 'tnd:main-site-reveal';
+                var value = window.sessionStorage.getItem(key);
+                window.sessionStorage.removeItem(key);
+
+                var createdAt = Number(value);
+                var isFresh = Number.isFinite(createdAt) && createdAt <= Date.now() && Date.now() - createdAt < 10000;
+                var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                if (isFresh && !reduceMotion) {
+                    document.documentElement.classList.add('tnd_link_reveal');
+                }
+            } catch (error) {
+                /* Storage can be unavailable in privacy-restricted contexts. */
+            }
+        }());
+    </script>
+    <link rel="stylesheet" type="text/css" href="/assets/css/fontello.css?v=5c5d2046f4">
+    <link rel="stylesheet" type="text/css" href="/assets/css/inline.css?v=5c5d2046f4">
+    <link rel="stylesheet" type="text/css" href="/assets/css/swiper.css?v=5c5d2046f4">
+    <link rel="stylesheet" type="text/css" href="/assets/css/widgets.css?v=5c5d2046f4">
+    <link rel="stylesheet" type="text/css" href="/assets/css/magnific.popup.css?v=5c5d2046f4">
+    <link rel="stylesheet" type="text/css" href="/assets/css/base.css?v=5c5d2046f4">
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=5c5d2046f4">
+    <link rel="stylesheet" type="text/css" href="/assets/css/embeds.css?v=5c5d2046f4">
+
+    <script>
         /* The script for calculating the color contrast has been taken from
         https://gomakethings.com/dynamically-changing-the-text-color-based-on-background-color-contrast-with-vanilla-js/ */
         var accentColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
@@ -31,7 +100,7 @@
         var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
         var textColor = (yiq >= 128) ? 'dark' : 'light';
 
-        document.documentElement.className = `has-${textColor}-text`;
+        document.documentElement.classList.add(`has-${textColor}-text`);
 
     </script>
 
@@ -207,10 +276,10 @@ Open Mike Eagle &amp; Kenny Segal">
     <script defer="" src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.8/umd/sodo-search.min.js" data-key="349cc727bf28ccbbbe01a4b281" data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.8/umd/main.css" data-sodo-search="https://theneedledrop.com/" data-locale="en" crossorigin="anonymous"></script>
     
     <link href="https://theneedledrop.com/webmentions/receive/" rel="webmention">
-    <script defer="" src="/public/cards.min.js?v=7b2c742f0b"></script>
-    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=7b2c742f0b">
-    <script defer="" src="/public/comment-counts.min.js?v=7b2c742f0b" data-ghost-comments-counts-api="https://theneedledrop.com/members/api/comments/counts/"></script>
-    <script defer="" src="/public/member-attribution.min.js?v=7b2c742f0b"></script><style>:root {--ghost-accent-color: #ffcc00;}</style>
+    <script defer="" src="/public/cards.min.js?v=5c5d2046f4"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=5c5d2046f4">
+    <script defer="" src="/public/comment-counts.min.js?v=5c5d2046f4" data-ghost-comments-counts-api="https://theneedledrop.com/members/api/comments/counts/"></script>
+    <script defer="" src="/public/member-attribution.min.js?v=5c5d2046f4"></script><style>:root {--ghost-accent-color: #ffcc00;}</style>
     <!-- Google tag (gtag.js) -->
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2V42KWS89Z"></script>
 <script>
@@ -270,9 +339,10 @@ Open Mike Eagle &amp; Kenny Segal">
 <!-- Meta tag -->
 <meta name="facebook-domain-verification" content="n1nm2i046v2kse2yuucs9skcrq1ysk">
 
-<style>.fluidvids {width: 100%; max-width: 100%; position: relative;}.fluidvids-item {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;}</style><script async="" src="https://cdn.confiant-integrations.net/TQKqBEtrLKQeEixRZzZ_NmOAgjo/gpt_and_prebid/config.js"></script><script type="text/javascript" async="" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js?network-code=154013155"></script><script type="text/javascript" async="" src="https://cdn.intergient.com/prebid/prebid.f97bb207764b49cfedb6.js"></script><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script src="https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202609170101/pubads_impl.js" async="" fetchpriority="high"></script><script async="" src="https://fundingchoicesmessages.google.com/i/154013155?ers=3"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxV_GqAlISflYw2DBpFcQHrqNGw22Vak0C3byj_oXhtR_LldmeXAeNjXOg843pTGoKo4vA5R4_56qyM3yL5dhXaOdBGBo3yEGoP-S0_qSX8R60cDoPOQ3DfQJkC98HYrE6QUMXRAMQ==?fccs=W251bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLFsxNzkwMTg3NDQ2LDE5MzAwMDAwMF0sbnVsbCxudWxsLG51bGwsW251bGwsWzddXSwiaHR0cHM6Ly90aGVuZWVkbGVkcm9wLmNvbS9sb3ZlZC1saXN0LzIwMjYvIixudWxsLFtbOCwiYXlxbjJQZ3IwcVEiXSxbOSwiZW4tVVMiXSxbMTgsIltbW251bGwsODU4XV1dIl0sWzM1LCIxNzkwMTg3NDQ0Il0sWzE5LCIyIl0sWzE3LCJbMF0iXSxbMjQsIiJdLFsyOSwiZmFsc2UiXV1d"></script><script type="text/javascript" src="//cdn.intergient.com/pageos/V.20260923.1/pageos.js" async=""></script><link rel="stylesheet" href="https://config.playwire.com/1025100/v2/websites/75114/styles.css"><script type="text/javascript" async="" src="https://solutions.cdn.optable.co/playwire/sdk.js" data-optable-sdk="true"></script><script type="text/javascript" src="https://tags.crwdcntrl.net/lt/c/17138/sync.min.js" async="" id="lotameScript"></script><script charset="utf-8" data-webpack="pageos:chunk-474" src="https://cdn.intergient.com/pageos/V.20260923.1/474.ea665a1b49642152304d.js"></script><script type="text/javascript">!function(a,l,b,c,k,s,t,g,A){a.CustomerConnectAnalytics=k,a[k]=a[k]||function(){ (a[k].q=a[k].q||[]).push(arguments)},g=l.createElement(b),A=l.getElementsByTagName(b)[0],g.type="text/javascript",g.async=!0,g.src=c+"?id="+s+"&parentId="+t,A.parentNode.insertBefore(g,A) }(window,document,"script","//carbon-cdn.ccgateway.net/script","cca",window.location.hostname,"5bb3e20859");</script><script type="text/javascript" src="https://ps.eyeota.net/pixel?pid=m51mh00&amp;t=ajs&amp;uid=user_c77c4ac0-220a-47c7-ba2e-8d758aae81af_1790187445026" async="" defer=""></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxVpbRd9ZnOLNUA3b3vYecrHniq-hL2QlIps_RlMDLGkYKkoWR1HyuhbJ1TKfakg0lRVaTvbIxhuJ5PPIxTM80g3SS89wSfR_9Uh-RxAnQRmAC9oQlytcfBx_h-JanCjpKaU8qNnZA==?fccs=W251bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLFsxNzkwMTg3NDQ2LDMzNTAwMDAwMF0sbnVsbCxudWxsLG51bGwsW251bGwsWzcsOV0sbnVsbCwyLG51bGwsImVuIl0sImh0dHBzOi8vdGhlbmVlZGxlZHJvcC5jb20vbG92ZWQtbGlzdC8yMDI2LyIsbnVsbCxbWzgsImF5cW4yUGdyMHFRIl0sWzksImVuLVVTIl0sWzE4LCJbW1tudWxsLDg1OF1dXSJdLFszNSwiMTc5MDE4NzQ0NCJdLFsxOSwiMiJdLFsxNywiWzBdIl0sWzI0LCIiXSxbMjksImZhbHNlIl1dXQ"></script></head>
+<style>.fluidvids {width: 100%; max-width: 100%; position: relative;}.fluidvids-item {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;}</style><script async="" src="https://cdn.confiant-integrations.net/TQKqBEtrLKQeEixRZzZ_NmOAgjo/gpt_and_prebid/config.js"></script><script type="text/javascript" async="" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js?network-code=154013155"></script><script type="text/javascript" async="" src="https://cdn.intergient.com/prebid/prebid.f97bb207764b49cfedb6.js"></script><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script src="https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202609110102/pubads_impl.js?cb=122881155" async="" fetchpriority="high"></script><script async="" src="https://fundingchoicesmessages.google.com/i/154013155?ers=3"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxXOsYYfKS23R5DyiuLPOqtbtX8yi776FwdbqvFiiR6Gkn8lrqOBJBxXj_0bDoWDGNpMnU-tv-F0hoRX6287xhfH3qDmUMeTZRgAII4en5jiQMsG9oIkCk31LtW0tX1y_vPcveT6fA==?fccs=W251bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLFsxNzkwMjczNzk3LDIzNzAwMDAwMF0sbnVsbCxudWxsLG51bGwsW251bGwsWzddXSwiaHR0cHM6Ly90aGVuZWVkbGVkcm9wLmNvbS9sb3ZlZC1saXN0LzIwMjYvIixudWxsLFtbOCwiYXlxbjJQZ3IwcVEiXSxbOSwiZW4tVVMiXSxbMTgsIltbW251bGwsMTMyMl1dXSJdLFszNSwiMTc5MDI3Mzc5NSJdLFsxOSwiMiJdLFsxNywiWzBdIl0sWzI0LCIiXSxbMjksImZhbHNlIl1dXQ"></script><script type="text/javascript" src="//cdn.intergient.com/pageos/V.20260923.1/pageos.js" async=""></script><link rel="stylesheet" href="https://config.playwire.com/1025100/v2/websites/75114/styles.css"><script type="text/javascript" async="" src="https://solutions.cdn.optable.co/playwire/sdk.js" data-optable-sdk="true"></script><script type="text/javascript" src="https://tags.crwdcntrl.net/lt/c/17138/sync.min.js" async="" id="lotameScript"></script><script charset="utf-8" data-webpack="pageos:chunk-474" src="https://cdn.intergient.com/pageos/V.20260923.1/474.ea665a1b49642152304d.js"></script><script type="text/javascript">!function(a,l,b,c,k,s,t,g,A){a.CustomerConnectAnalytics=k,a[k]=a[k]||function(){ (a[k].q=a[k].q||[]).push(arguments)},g=l.createElement(b),A=l.getElementsByTagName(b)[0],g.type="text/javascript",g.async=!0,g.src=c+"?id="+s+"&parentId="+t,A.parentNode.insertBefore(g,A) }(window,document,"script","//carbon-cdn.ccgateway.net/script","cca",window.location.hostname,"5bb3e20859");</script><script type="text/javascript" src="https://ps.eyeota.net/pixel?pid=m51mh00&amp;t=ajs&amp;uid=user_9028ce99-c09a-400c-b670-6558e413236f_1790273797379" async="" defer=""></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxWPPAmYiTTW9dpkWr2xP59WHtKZZnM9GJQoyKSB-tFTLOoZVS1bSg4cYRY0DI8GKXgFQA5qux8F2Zi6TY_ZEFXJJ-3P8u9JezcItJ_-jKnCzO6pQbJrAg_DCibCi9dy0AgVwu7OxQ==?fccs=W251bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLFsxNzkwMjczNzk3LDM5NjAwMDAwMF0sbnVsbCxudWxsLG51bGwsW251bGwsWzcsOV0sbnVsbCwyLG51bGwsImVuIl0sImh0dHBzOi8vdGhlbmVlZGxlZHJvcC5jb20vbG92ZWQtbGlzdC8yMDI2LyIsbnVsbCxbWzgsImF5cW4yUGdyMHFRIl0sWzksImVuLVVTIl0sWzE4LCJbW1tudWxsLDEzMjJdXV0iXSxbMzUsIjE3OTAyNzM3OTUiXSxbMTksIjIiXSxbMTcsIlswXSJdLFsyNCwiIl0sWzI5LCJmYWxzZSJdXV0"></script></head>
 <body class="post-template tag-loved-list">
-    
+    <div class="tnd_link_reveal_cover" aria-hidden="true"></div>
+
     <div class="xoxo_fn_stickynav ajax_enable">
     <div class="progress"></div>
     <div class="container">
@@ -894,24 +964,24 @@ Open Mike Eagle &amp; Kenny Segal">
 
                                 <div class="top_article">
                                     <div class="item_img">
-                                        <a class="full_link" href="/interviews/interview-tankerlow-know-they-sound-like-slint-and-they-love-it/"></a>
-                                        <img src="/content/images/size/w600/2026/09/tankerlow-by-Griffin-Ellis3-scaled.jpg" alt="INTERVIEW: tankerlow know they sound like Slint and they love it">
+                                        <a class="full_link" href="/festival-review-shaky-knees-2026/"></a>
+                                        <img src="/content/images/size/w600/2026/09/Aerials-by-Andrea-Escobar-Garcia-for-Shaky-Knees-2026_DJI_20260918195103_0059_D_D001-HDR.jpg" alt="Festival Review: Shaky Knees 2026">
                                     </div>
-                                    <h3 class="fn_title"><a href="/interviews/interview-tankerlow-know-they-sound-like-slint-and-they-love-it/">INTERVIEW: tankerlow know they sound like Slint and they love it</a></h3>
+                                    <h3 class="fn_title"><a href="/festival-review-shaky-knees-2026/">Festival Review: Shaky Knees 2026</a></h3>
                                     <div class="t_rail">
                                         <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                                     </div>
                                 </div>
 
                                     <div class="bottom_article">
-                                        <a class="full_link" href="/todays-release-highlights-9-18-26/"></a>
-                                        <div class="item_img frenify-ready" style="background-image: url(/content/images/size/w160/2026/07/NEW-This-Week---s-Releases-2.jpg);"> </div>
-                                        <h3 class="fn_title"><a href="/todays-release-highlights-9-18-26/">Today's Release Highlights (9/18/26)</a></h3>
+                                        <a class="full_link" href="/concert-review-fontaines-dc-unleash-the-darkness-of-dopamine-chamber-at-brooklyns-kings-theatre/"></a>
+                                        <div class="item_img frenify-ready" style="background-image: url(/content/images/size/w160/2026/09/FonatinesDC_EmilioHerce.jpg);"> </div>
+                                        <h3 class="fn_title"><a href="/concert-review-fontaines-dc-unleash-the-darkness-of-dopamine-chamber-at-brooklyns-kings-theatre/">CONCERT REVIEW: Fontaines DC unleash the darkness of ‘Dopamine Chamber’ at Brooklyn’s Kings Theatre</a></h3>
                                     </div>
                                     <div class="bottom_article">
-                                        <a class="full_link" href="/concert-review-charli-xcx-might-be-making-ro-o-o-o-ck-music-but-her-current-tour-is-total-pop-spectacle/"></a>
-                                        <div class="item_img frenify-ready" style="background-image: url(/content/images/size/w160/2026/09/HSBaX3EbgAAfDWA-1-1.jpg);"> </div>
-                                        <h3 class="fn_title"><a href="/concert-review-charli-xcx-might-be-making-ro-o-o-o-ck-music-but-her-current-tour-is-total-pop-spectacle/">Concert Review: Charli xcx might be making ro-o-o-o-ck music, but her current tour is total pop spectacle</a></h3>
+                                        <a class="full_link" href="/interviews/interview-tankerlow-know-they-sound-like-slint-and-they-love-it/"></a>
+                                        <div class="item_img frenify-ready" style="background-image: url(/content/images/size/w160/2026/09/tankerlow-by-Griffin-Ellis3-scaled.jpg);"> </div>
+                                        <h3 class="fn_title"><a href="/interviews/interview-tankerlow-know-they-sound-like-slint-and-they-love-it/">INTERVIEW: tankerlow know they sound like Slint and they love it</a></h3>
                                     </div>
 
                     </div>
@@ -1172,12 +1242,12 @@ Open Mike Eagle &amp; Kenny Segal">
 <!--================= Scroll to Top End =================-->
 
 
-<script src="/assets/js/jquery.min.js?v=7b2c742f0b"></script>
-<script src="/assets/js/magnific.popup.js?v=7b2c742f0b"></script>
-<script src="/assets/js/isotope.js?v=7b2c742f0b"></script>
-<script src="/assets/js/swiper.js?v=7b2c742f0b"></script>
-<script src="/assets/js/card.js?v=7b2c742f0b"></script>
-<script src="/assets/js/main.js?v=7b2c742f0b"></script>
+<script src="/assets/js/jquery.min.js?v=5c5d2046f4"></script>
+<script src="/assets/js/magnific.popup.js?v=5c5d2046f4"></script>
+<script src="/assets/js/isotope.js?v=5c5d2046f4"></script>
+<script src="/assets/js/swiper.js?v=5c5d2046f4"></script>
+<script src="/assets/js/card.js?v=5c5d2046f4"></script>
+<script src="/assets/js/main.js?v=5c5d2046f4"></script>
 
 <script data-cfasync="false" async="" src="//cdn.intergient.com/ramp_core.js"></script>
 
@@ -1206,8 +1276,44 @@ Open Mike Eagle &amp; Kenny Segal">
   });
 </script>
 
+<script>
+    (function () {
+        if (!document.documentElement.classList.contains('tnd_link_reveal')) {
+            return;
+        }
+
+        var revealed = false;
+        var reveal = function () {
+            if (revealed) {
+                return;
+            }
+            revealed = true;
+
+            window.requestAnimationFrame(function () {
+                document.documentElement.classList.add('tnd_link_reveal_ready');
+
+                window.setTimeout(function () {
+                    var cover = document.querySelector('.tnd_link_reveal_cover');
+                    if (cover) {
+                        cover.remove();
+                    }
+                    document.documentElement.classList.remove('tnd_link_reveal', 'tnd_link_reveal_ready');
+                }, 420);
+            });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', reveal, {once: true});
+        } else {
+            reveal();
+        }
+
+        /* A bounded fallback avoids a lingering cover if another script delays
+         * DOMContentLoaded unexpectedly. */
+        window.setTimeout(reveal, 450);
+    }());
+</script>
 
 
 
-
-<div id="ghost-portal-root" data-testid="portal-root"></div><div id="sodo-search-root"></div><iframe marginwidth="0" marginheight="0" scrolling="no" frameborder="0" id="16b504974f76a" width="0" height="0" src="about:blank" name="__pb_locator__" style="display: none; height: 0px; width: 0px; border: 0px;"></iframe><iframe name="googlefcPresent" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe style="width: 0px; height: 0px; display: none; position: fixed; left: -999px; top: -999px;"></iframe><iframe name="cnftComm" style="width: 0px; height: 0px; display: none; position: fixed; left: -999px; top: -999px;"></iframe><div id="confiant_tag_holder" style="display:none"></div><iframe name="__tcfapiLocator" src="about:blank" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcInactive" src="about:blank" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcLoaded" src="about:blank" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><div id="adBanner" class="adLeaderboard adBanner leaderboard_ad" style="background-color: transparent; height: 10px; width: 10px; position: fixed; bottom: -100px; left: -100px;">&nbsp;</div><iframe id="pw_user_data" src="https://cdn.intergient.com/pageos/V.20260923.1/iframe/iframe.html" style="display: none; height: 0px; width: 0px; position: fixed; bottom: -99999px;"></iframe></body></html>
+<div id="ghost-portal-root" data-testid="portal-root"></div><div id="sodo-search-root"></div><iframe marginwidth="0" marginheight="0" scrolling="no" frameborder="0" id="1ea454cf9b464f" width="0" height="0" src="about:blank" name="__pb_locator__" style="display: none; height: 0px; width: 0px; border: 0px;"></iframe><iframe name="googlefcPresent" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe style="width: 0px; height: 0px; display: none; position: fixed; left: -999px; top: -999px;"></iframe><iframe name="cnftComm" style="width: 0px; height: 0px; display: none; position: fixed; left: -999px; top: -999px;"></iframe><div id="confiant_tag_holder" style="display:none"></div><iframe name="__tcfapiLocator" src="about:blank" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcInactive" src="about:blank" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcLoaded" src="about:blank" style="display: none; width: 0px; height: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><div id="adBanner" class="adLeaderboard adBanner leaderboard_ad" style="background-color: transparent; height: 10px; width: 10px; position: fixed; bottom: -100px; left: -100px;">&nbsp;</div><iframe id="pw_user_data" src="https://cdn.intergient.com/pageos/V.20260923.1/iframe/iframe.html" style="display: none; height: 0px; width: 0px; position: fixed; bottom: -99999px;"></iframe></body></html>
